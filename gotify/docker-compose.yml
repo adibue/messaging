@@ -1,0 +1,27 @@
+---
+services:
+  gotify:
+    container_name: gotify
+    hostname: gotify
+    image: gotify/server
+    restart: always
+    user: "1000:1000"
+    ports:
+      - 8080:80
+    networks:
+      - cf-tunnel
+    env_file:
+      - stack.env
+    environment:
+      - TZ=Europe/Zurich
+      - GOTIFY_DEFAULTUSER_NAME=${GOTIFY_DEFAULTUSER_NAME:?'GOTIFY_DEFAULTUSER_NAME' not set}
+      - GOTIFY_DEFAULTUSER_PASS=${GOTIFY_DEFAULTUSER_PASS:?'GOTIFY_DEFAULTUSER_PASS' not set}
+      - GOTIFY_UPLOADEDIMAGESDIR=/app/data/images
+      - GOTIFY_PLUGINSDIR=/app/data/plugins
+    volumes:
+      - ${APPDATA:?'APPDATA' not set}/gotify:/app/data
+
+networks:
+  cf-tunnel:
+    name: cf-tunnel
+    external: true
